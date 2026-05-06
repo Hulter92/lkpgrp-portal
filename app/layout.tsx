@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
+import type { ReactNode } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -18,10 +19,10 @@ export const metadata: Metadata = {
   description: "Roleplay Portal",
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="sv">
-      <body>
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           {children}
         </Providers>
