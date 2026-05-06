@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { Check, X, Mic, CheckCircle } from "lucide-react";
+
 const statusColor = {
   pending: "bg-yellow-500/20 text-yellow-400",
   approved: "bg-green-500/20 text-green-400",
@@ -18,6 +20,9 @@ const statusConfig = {
   denied: { label: "❌ Nekad" },
 };
 
+const buttonBase =
+  "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 shadow-md hover:shadow-lg hover:scale-105 active:scale-95";
+
 export default function AdminPanel() {
   const [apps, setApps] = useState([]);
   const [search, setSearch] = useState("");
@@ -25,7 +30,6 @@ export default function AdminPanel() {
   const [page, setPage] = useState(1);
   const [selectedApp, setSelectedApp] = useState(null);
 
-  const [modalRole, setModalRole] = useState("whitelist");
   const [lastCount, setLastCount] = useState(0);
 
   const pageSize = 5;
@@ -154,7 +158,6 @@ export default function AdminPanel() {
             key={app.id}
             onClick={() => {
               setSelectedApp(app);
-              setModalRole("whitelist");
             }}
             className="p-4 rounded border border-zinc-300 dark:border-zinc-800 cursor-pointer hover:bg-zinc-800/30 transition"
           >
@@ -221,63 +224,48 @@ export default function AdminPanel() {
               className="prose prose-invert max-w-none text-sm"
               dangerouslySetInnerHTML={{ __html: selectedApp.story }}
             />
-
-            {/* 🎭 ROLE SELECT */}
-            <div className="mt-6">
-              <span className="text-sm text-zinc-400">Discord roll</span>
-
-              <select
-                value={modalRole}
-                onChange={(e) => setModalRole(e.target.value)}
-                className="mt-2 w-full p-2 rounded bg-zinc-800 text-white"
-              >
-                <option value="whitelist">Whitelist</option>
-                <option value="staff">Staff</option>
-                <option value="police">Police</option>
-              </select>
-            </div>
-
+ 
             {/* ACTIONS */}
-            <div className="flex gap-2 mt-6">
+            <div className="flex flex-wrap gap-2 mt-6">
 
-              <button
-                onClick={() => updateStatus(selectedApp.id, "interview_booked")}
-                className="bg-blue-600 px-3 py-1 rounded"
-              >
-                Intervju
-              </button>
+  <button
+    onClick={() => updateStatus(selectedApp.id, "interview_booked")}
+    className={`${buttonBase} bg-blue-600 hover:bg-blue-700`}
+  >
+    <Mic size={16} />
+    Intervju
+  </button>
 
-              <button
-                onClick={() => updateStatus(selectedApp.id, "interview_done")}
-                className="bg-purple-600 px-3 py-1 rounded"
-              >
-                Intervju klar
-              </button>
+  <button
+    onClick={() => updateStatus(selectedApp.id, "interview_done")}
+    className={`${buttonBase} bg-purple-600 hover:bg-purple-700`}
+  >
+    <CheckCircle size={16} />
+    Klar
+  </button>
 
-              <button
-                onClick={() =>
-                  updateStatus(selectedApp.id, "approved", modalRole)
-                }
-                className="bg-green-600 px-3 py-1 rounded"
-              >
-                Godkänn
-              </button>
+  <button
+  onClick={() => updateStatus(selectedApp.id, "approved")}
+  disabled={selectedApp.status === "approved"}
+  className={`${buttonBase} bg-green-600 hover:bg-green-700 ${
+    selectedApp.status === "approved"
+      ? "opacity-50 cursor-not-allowed"
+      : ""
+  }`}
+>
+  <Check size={16} />
+  Godkänn
+</button>
 
-              <button
-                onClick={() => updateStatus(selectedApp.id, "denied")}
-                className="bg-red-600 px-3 py-1 rounded"
-              >
-                Neka
-              </button>
+  <button
+    onClick={() => updateStatus(selectedApp.id, "denied")}
+    className={`${buttonBase} bg-red-600 hover:bg-red-700`}
+  >
+    <X size={16} />
+    Neka
+  </button>
 
-              <button
-                onClick={() => setSelectedApp(null)}
-                className="ml-auto text-zinc-400"
-              >
-                Stäng
-              </button>
-
-            </div>
+</div>
 
           </div>
         </div>
