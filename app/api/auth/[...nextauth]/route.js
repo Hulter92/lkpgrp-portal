@@ -1,29 +1,23 @@
 import NextAuth from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 
-const handler = NextAuth({
+export const authOptions = {
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID,
       clientSecret: process.env.DISCORD_CLIENT_SECRET,
     }),
   ],
-
   callbacks: {
-    async jwt({ token, account, profile }) {
-      // körs vid login
-      if (account && profile) {
-        token.id = profile.id; // Discord user ID
-      }
-      return token;
-    },
-
     async session({ session, token }) {
-      // skickas till frontend
-      session.user.id = token.id;
+      if (session.user) {
+        session.user.id = token.sub;
+      }
       return session;
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
