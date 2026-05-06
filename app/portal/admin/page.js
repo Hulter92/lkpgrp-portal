@@ -200,7 +200,7 @@ export default function AdminPanel() {
       {selectedApp && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
 
-          <div className="bg-zinc-900 p-6 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+          <div className="bg-zinc-900 p-6 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto relative">
 
             <h2 className="text-xl font-bold mb-4">
   {selectedApp.fullname}
@@ -264,6 +264,13 @@ export default function AdminPanel() {
     <X size={16} />
     Neka
   </button>
+
+  <button
+  onClick={() => setSelectedApp(null)}
+  className="absolute top-4 right-4 text-zinc-400 hover:text-white"
+>
+  ✕
+</button>
 
 </div>
 
