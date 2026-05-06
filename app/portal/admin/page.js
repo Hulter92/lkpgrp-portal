@@ -7,6 +7,8 @@ const statusColor = {
   interview: "bg-blue-500/20 text-blue-400",
   approved: "bg-green-500/20 text-green-400",
   denied: "bg-red-500/20 text-red-400",
+  interview_booked: "bg-blue-500/20 text-blue-400",
+  interview_done: "bg-purple-500/20 text-purple-400",
 };
 
 export default function AdminPanel() {
@@ -219,10 +221,17 @@ export default function AdminPanel() {
             <div className="flex gap-2 mt-6">
 
               <button
-                onClick={() => updateStatus(selectedApp.id, "interview")}
+                onClick={() => updateStatus(selectedApp.id, "interview_booked")}
                 className="bg-blue-600 px-3 py-1 rounded"
               >
                 Intervju
+              </button>
+
+              <button
+                onClick={() => updateStatus(selectedApp.id, "interview_done")}
+                className="bg-purple-600 px-3 py-1 rounded"
+              >
+                Intervju klar
               </button>
 
               <button
