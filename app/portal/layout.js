@@ -58,6 +58,17 @@ export default function PortalLayout({ children }) {
     }
   }, [status]);
 
+  // 🔒 skydda admin
+useEffect(() => {
+  if (!role) return;
+
+  const isAdmin = role === "Headquarters";
+
+  if (!isAdmin && window.location.pathname.startsWith("/portal/admin")) {
+    router.push("/portal");
+  }
+}, [role]);
+
 
   // Discord roll
   useEffect(() => {
@@ -178,6 +189,37 @@ export default function PortalLayout({ children }) {
                 </div>
               )}
             </div>
+
+            {/* Admin */}
+{role === "Headquarters" && (
+  <div>
+    <button
+      onClick={() => toggle("admin")}
+      className="w-full flex items-center justify-between p-2 text-zinc-500 hover:text-[var(--foreground)]"
+    >
+      <span>Admin</span>
+
+      <ChevronDown
+        size={16}
+        className={`transition-transform ${
+          openMenu === "admin" ? "rotate-0" : "-rotate-90"
+        }`}
+      />
+    </button>
+
+    {openMenu === "admin" && (
+      <div className="ml-4 mt-2 space-y-1">
+        <Link
+          href="/portal/admin"
+          className="flex items-center gap-3 p-2 rounded hover:bg-zinc-800/40 text-red-500"
+        >
+          <ClipboardList size={18} />
+          <span>Admin panel</span>
+        </Link>
+      </div>
+    )}
+  </div>
+)}
 
           </nav>
         </div>
