@@ -1,29 +1,53 @@
 import { prisma } from "@/lib/prisma";
 
 const GUILD_ID = process.env.DISCORD_GUILD_ID;
-const ROLE_ID = process.env.DISCORD_WHITELIST_ROLE;
 const BOT_TOKEN = process.env.DISCORD_BOT_TOKEN;
 
-export async function POST(req) {
-  const { id, action, userId } = await req.json();
+// 🎭 map från frontend → discord role
+const roleMap = {
+  whitelist: process.env.DISCORD_WHITELIST_ROLE,
+  staff: process.env.DISCORD_STAFF_ROLE,
+  police: process.env.DISCORD_POLICE_ROLE,
+};
 
-  // Uppdatera DB
-  await prisma.application.update({
+export async function POST(req) {
+  const { id, status, roleType } = await req.json();
+
+  // 🔍 hämta ansökan
+  const app = await prisma.application.findUnique({
     where: { id },
-    data: { status: action },
   });
 
-  // Om approve → ge Discord roll
-  if (action === "approved") {
-    await fetch(
-      `https://discord.com/api/guilds/${GUILD_ID}/members/${userId}/roles/${ROLE_ID}`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bot ${BOT_TOKEN}`,
-        },
+  if (!app) {
+    return new Response("Not found", { status: 404 });
+  }
+
+  // 💾 uppdatera DB
+  await prisma.application.update({
+    where: { id },
+    data: { status },
+  });
+
+  // 🎭 ge Discord roll om approved
+  if (status === "approved" && roleType) {
+    const roleId = roleMap[roleType];
+
+    if (roleId) {
+      try {
+        await fetch(
+          `https://discord.com/api/guilds/${GUILD_ID}/members/${app.userId}/roles/${roleId}`,
+          {
+            method: "PUT",
+            headers: {
+              Authorization: `Bot ${BOT_TOKEN}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+      } catch (err) {
+        console.error("Discord error:", err);
       }
-    );
+    }
   }
 
   return Response.json({ success: true });
