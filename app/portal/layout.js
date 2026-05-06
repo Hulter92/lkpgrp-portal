@@ -58,17 +58,6 @@ export default function PortalLayout({ children }) {
     }
   }, [status]);
 
-  // 🔒 skydda admin
-useEffect(() => {
-  if (!role) return;
-
-  const isAdmin = role === "Headquarters";
-
-  if (!isAdmin && window.location.pathname.startsWith("/portal/admin")) {
-    router.push("/portal");
-  }
-}, [role]);
-
 
   // Discord roll
   useEffect(() => {
