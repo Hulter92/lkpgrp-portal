@@ -4,11 +4,18 @@ import { useEffect, useState } from "react";
 
 const statusColor = {
   pending: "bg-yellow-500/20 text-yellow-400",
-  interview: "bg-blue-500/20 text-blue-400",
   approved: "bg-green-500/20 text-green-400",
   denied: "bg-red-500/20 text-red-400",
   interview_booked: "bg-blue-500/20 text-blue-400",
   interview_done: "bg-purple-500/20 text-purple-400",
+};
+
+const statusConfig = {
+  pending: { label: "⏳ Väntar" },
+  interview_booked: { label: "🎤 Intervju bokad" },
+  interview_done: { label: "🟣 Intervju klar" },
+  approved: { label: "✅ Godkänd" },
+  denied: { label: "❌ Nekad" },
 };
 
 export default function AdminPanel() {
@@ -63,7 +70,8 @@ export default function AdminPanel() {
   const stats = {
     total: apps.length,
     pending: apps.filter(a => a.status === "pending").length,
-    interview: apps.filter(a => a.status === "interview").length,
+    interview_booked: apps.filter(a => a.status === "interview_booked").length,
+    interview_done: apps.filter(a => a.status === "interview_done").length,
     approved: apps.filter(a => a.status === "approved").length,
     denied: apps.filter(a => a.status === "denied").length,
   };
@@ -95,8 +103,13 @@ export default function AdminPanel() {
         </div>
 
         <div className="p-4 rounded bg-blue-500/20 text-center">
-          <div className="text-xl font-bold">{stats.interview}</div>
-          <div className="text-xs">Intervju</div>
+          <div className="text-xl font-bold">{stats.interview_booked}</div>
+          <div className="text-xs">Intervju bokad</div>
+        </div>
+
+        <div className="p-4 rounded bg-purple-500/20 text-center">
+          <div className="text-xl font-bold">{stats.interview_done}</div>
+          <div className="text-xs">Intervju klar</div>
         </div>
 
         <div className="p-4 rounded bg-green-500/20 text-center">
@@ -127,7 +140,8 @@ export default function AdminPanel() {
         >
           <option value="all">Alla</option>
           <option value="pending">Pending</option>
-          <option value="interview">Interview</option>
+          <option value="interview_booked">Intervju bokad</option>
+          <option value="interview_done">Intervju klar</option>
           <option value="approved">Approved</option>
           <option value="denied">Denied</option>
         </select>
@@ -153,9 +167,9 @@ export default function AdminPanel() {
                 </div>
               </div>
 
-              <span className={`px-2 py-1 rounded text-xs ${statusColor[app.status]}`}>
-                {app.status}
-              </span>
+              <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 w-fit backdrop-blur border border-white/10 hover:scale-105 transition ${statusColor[app.status]}`}>
+  {statusConfig[app.status]?.label || app.status}
+</span>
 
             </div>
           </div>
@@ -186,8 +200,14 @@ export default function AdminPanel() {
           <div className="bg-zinc-900 p-6 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
 
             <h2 className="text-xl font-bold mb-4">
-              {selectedApp.fullname}
-            </h2>
+  {selectedApp.fullname}
+</h2>
+
+<div className="mb-3">
+  <span className={`px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1 w-fit backdrop-blur border border-white/10 hover:scale-105 transition ${statusColor[selectedApp.status]}`}>
+    {statusConfig[selectedApp.status]?.label}
+  </span>
+</div>
 
             <div className="text-sm text-zinc-400 mb-2">
               🎂 {selectedApp.birthdate}
