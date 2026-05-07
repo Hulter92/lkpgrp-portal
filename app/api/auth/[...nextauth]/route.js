@@ -13,9 +13,14 @@ export const authOptions = {
     if (!token.sub) return token;
 
     try {
-      const res = await fetch(
-  `/api/discord/role?userId=${token.sub}`
-);
+    const res = await fetch(
+      `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${token.sub}`,
+      {
+        headers: {
+          Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
+        },
+      }
+    );
 
       const data = await res.json();
       const roles = data.roles || [];
@@ -27,9 +32,10 @@ export const authOptions = {
       } else {
         token.role = "Ansökande";
       }
-    } catch {
-      token.role = "Ansökande";
-    }
+   } catch (err) {
+    console.error("Discord role error:", err);
+    token.role = "Ansökande";
+  }
 
     return token;
   },
