@@ -10,11 +10,12 @@ export const authOptions = {
   ],
   callbacks: {
   async jwt({ token }) {
-    if (!token.sub) return token;
+  const userId = token.sub || token.id;
+  if (!userId) return token;
 
-    try {
+  try {
     const res = await fetch(
-      `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${token.sub}`,
+      `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${userId}`,
       {
         headers: {
           Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
@@ -22,23 +23,26 @@ export const authOptions = {
       }
     );
 
-      const data = await res.json();
-      const roles = data.roles || [];
+    const data = await res.json();
+    const roles = data.roles || [];
 
-      if (roles.includes("1501163659760500868")) {
-        token.role = "Headquarters";
-      } else if (roles.includes("1501165906347425872")) {
-        token.role = "Whitelisted";
-      } else {
-        token.role = "Ansökande";
-      }
-   } catch (err) {
+    console.log("ROLES:", roles);
+
+    if (roles.includes("1501163659760500868")) {
+      token.role = "Headquarters";
+    } else if (roles.includes("1501165906347425872")) {
+      token.role = "Whitelisted";
+    } else {
+      token.role = "Ansökande";
+    }
+
+  } catch (err) {
     console.error("Discord role error:", err);
     token.role = "Ansökande";
   }
 
-    return token;
-  },
+  return token;
+}
 
   async session({ session, token }) {
     if (session.user) {
