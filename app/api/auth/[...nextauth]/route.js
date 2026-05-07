@@ -14,8 +14,8 @@ export const authOptions = {
 
     try {
       const res = await fetch(
-        `${process.env.NEXTAUTH_URL}/api/discord/role?userId=${token.sub}`
-      );
+  `/api/discord/role?userId=${token.sub}`
+);
 
       const data = await res.json();
       const roles = data.roles || [];
