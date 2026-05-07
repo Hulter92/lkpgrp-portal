@@ -15,7 +15,7 @@ export const authOptions = {
 
   try {
     const res = await fetch(
-      `https://discord.com/api/guilds/${process.env.DISCORD_GUILD_ID}/members/${userId}`,
+      `https://discord.com/api/guilds/${process.env.GUILD_ID}/members/${userId}`,
       {
         headers: {
           Authorization: `Bot ${process.env.DISCORD_BOT_TOKEN}`,
