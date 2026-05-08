@@ -36,7 +36,7 @@ export default function PortalHome() {
     </h2>
 
     <p className="text-sm text-zinc-400 mb-4">
-      Du måste gå med i Discord-servern innan du kan bli godkänd.
+      Du måste gå med i Discord-servern innan du kan bli godkänd och få Whitelist.
     </p>
 
     <a
