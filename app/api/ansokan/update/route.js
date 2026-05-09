@@ -7,6 +7,8 @@ const WHITELIST_ROLE = process.env.DISCORD_WHITELIST_ROLE;
 export async function POST(req) {
   const { id, status } = await req.json();
 
+  console.log("GUILD:", GUILD_ID);
+
   // 🔍 hämta ansökan
   const app = await prisma.application.findUnique({
     where: { id },
