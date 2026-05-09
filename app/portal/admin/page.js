@@ -80,13 +80,31 @@ export default function AdminPanel() {
     denied: apps.filter(a => a.status === "denied").length,
   };
 
-  const updateStatus = async (id, status, roleType = null) => {
-    await fetch("/api/ansokan/update", {
+  const updateStatus = async (id, status) => {
+  try {
+    const res = await fetch("/api/ansokan/update", {
       method: "POST",
-      body: JSON.stringify({ id, status, roleType }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, status }),
     });
+
+    const data = await res.json();
+
+    console.log("API RESPONSE:", data); // 👈 debug
+
+    if (data.error) {
+      alert("❌ " + data.error);
+      return;
+    }
+
     fetchApps();
-  };
+  } catch (err) {
+    console.error("Frontend error:", err);
+    alert("❌ Något gick fel");
+  }
+};
 
   return (
     <div className="p-10 max-w-6xl mx-auto">
