@@ -15,7 +15,7 @@ export default function PortalHome() {
       />
 
       {/* Overlay */}
-      <div className="absolute inset-0 bg-black/60" />
+      <div className="absolute inset-0 bg-black/60 z-0 pointer-events-none" />
 
       {/* Centered content */}
       <div className="relative z-10 flex flex-col items-center justify-center h-full text-center">
